@@ -1,0 +1,7 @@
+!**.gitignore
+/.idea
+/vendor
+**/.DS_Store
+/postgre-books-authors.iml
+/*.cache
+.gitconfig
