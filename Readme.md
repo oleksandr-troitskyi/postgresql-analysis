@@ -42,8 +42,12 @@ See `dump.sql` file. It was created with pg_dump command.
 `createuser --interactive --pwprompt` to create user. Follow the instructions.    
  Then run `psql -U <new_user_name> -W -d database_name_dump < dump.sql` where `<new_user_name>` is role from previous 
  command.  
-It will create `books_authors` DB with both schema and insertions. You don't need to create user in Docker container 
-provider there, as it already has one.
+It will create `books_authors` DB with both schema and insertions.  
+You don't need to create user in Docker container provider there, as it already has one:
+- Just run `docker-compose build` to build an image. 
+- Then `docker-compose up -d`  to run new container. 
+- Finally, `docker-compose exec postgresql /bin/bash` to enter container. From this point just follow instructions 
+above of how to use dump.sql.
 **Note: PostgreSQL container takes some time to start, so please be patient.**
   
 ## Produce queries to answer the following questions
@@ -422,3 +426,12 @@ Execution time: 0.168 ms
 
 So there is the simplest single operation Seq Scan on authors. Execution time is very-very low, so we have a huge 
 profit of this optimisation.
+  
+  
+**P.S.**: I did not go with classical id fields with unique int values in this task. Tables should have them by default. We 
+can have several complete namesakes in the list of authors. And even same named books by different authors. But I 
+believe it is out of the range of this task and was not the target.  
+Other than that, we can use indexes for aggregated functions like round(AVG(COALESCE(b.pages, 0))) or count(b.name), but
+ it is not effective from practical reasons. Creating separate fields make this table more visual. Although, it 
+ significantly decreases comptutations in future. We can only recalculate one row in case of any changes with books 
+ quantity.
